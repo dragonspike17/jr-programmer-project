@@ -11,22 +11,47 @@ public class MenuUIHandler : MonoBehaviour
 {
     public ColorPicker ColorPicker;
 
-    public void NewColorSelected(Color color)
-    {
-        // Color persistence will be added later.
-    }
-
+    // Initialize the color picker when the menu starts
     private void Start()
     {
-        ColorPicker.Init();
-        ColorPicker.onColorChanged += NewColorSelected;
+        if (ColorPicker != null)
+        {
+            ColorPicker.Init();
+
+            ColorPicker.onColorChanged += NewColorSelected;
+        }
+        else
+        {
+            Debug.LogWarning("ColorPicker is not assigned!");
+        }
     }
 
+    // Called when the player selects a forklift color
+    public void NewColorSelected(Color color)
+    {
+        if (MainManager.Instance != null)
+        {
+            // Store the selected forklift color
+            MainManager.Instance.TeamColor = color;
+
+            // Save the selected color to a JSON file
+            MainManager.Instance.SaveColor();
+
+            Debug.Log("Forklift color selected and saved!");
+        }
+        else
+        {
+            Debug.LogWarning("MainManager was not found!");
+        }
+    }
+
+    // Start the warehouse simulation
     public void StartNew()
     {
         SceneManager.LoadScene(1);
     }
 
+    // Exit the game
     public void Exit()
     {
 #if UNITY_EDITOR
@@ -34,5 +59,14 @@ public class MenuUIHandler : MonoBehaviour
 #else
         Application.Quit();
 #endif
+    }
+
+    // Remove the color picker event when destroyed
+    private void OnDestroy()
+    {
+        if (ColorPicker != null)
+        {
+            ColorPicker.onColorChanged -= NewColorSelected;
+        }
     }
 }

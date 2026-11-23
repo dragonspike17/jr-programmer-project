@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6000b890c9df5499d74b21ec45c02c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TeamColor: {r: 0, g: 0, b: 0, a: 0}
+  TeamColor: {r: 1, g: 1, b: 1, a: 0}
   ResourceDatabase: {fileID: 11400000, guid: eac40d5a11488c94dbf95ec31bbd2122, type: 2}
 --- !u!4 &400308240
 Transform:
