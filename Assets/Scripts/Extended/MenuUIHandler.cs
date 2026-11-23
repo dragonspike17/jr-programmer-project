@@ -11,14 +11,23 @@ public class MenuUIHandler : MonoBehaviour
 {
     public ColorPicker ColorPicker;
 
-    // Initialize the color picker when the menu starts
     private void Start()
     {
         if (ColorPicker != null)
         {
+            // Initialize the color picker
             ColorPicker.Init();
 
+            // Listen for color changes
             ColorPicker.onColorChanged += NewColorSelected;
+
+            // Restore the saved color when opening the menu
+            if (MainManager.Instance != null)
+            {
+                ColorPicker.SelectColor(
+                    MainManager.Instance.TeamColor
+                );
+            }
         }
         else
         {
@@ -26,22 +35,12 @@ public class MenuUIHandler : MonoBehaviour
         }
     }
 
-    // Called when the player selects a forklift color
+    // Store the color selected by the player
     public void NewColorSelected(Color color)
     {
         if (MainManager.Instance != null)
         {
-            // Store the selected forklift color
             MainManager.Instance.TeamColor = color;
-
-            // Save the selected color to a JSON file
-            MainManager.Instance.SaveColor();
-
-            Debug.Log("Forklift color selected and saved!");
-        }
-        else
-        {
-            Debug.LogWarning("MainManager was not found!");
         }
     }
 
@@ -51,9 +50,14 @@ public class MenuUIHandler : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    // Exit the game
+    // Save the color and exit the application
     public void Exit()
     {
+        if (MainManager.Instance != null)
+        {
+            MainManager.Instance.SaveColor();
+        }
+
 #if UNITY_EDITOR
         EditorApplication.ExitPlaymode();
 #else
@@ -61,7 +65,31 @@ public class MenuUIHandler : MonoBehaviour
 #endif
     }
 
-    // Remove the color picker event when destroyed
+    // Called by the Save Color button
+    public void SaveColorClicked()
+    {
+        if (MainManager.Instance != null)
+        {
+            MainManager.Instance.SaveColor();
+            Debug.Log("Color saved successfully!");
+        }
+    }
+
+    // Called by the Load Color button
+    public void LoadColorClicked()
+    {
+        if (MainManager.Instance != null)
+        {
+            MainManager.Instance.LoadColor();
+
+            ColorPicker.SelectColor(
+                MainManager.Instance.TeamColor
+            );
+
+            Debug.Log("Color loaded successfully!");
+        }
+    }
+
     private void OnDestroy()
     {
         if (ColorPicker != null)
